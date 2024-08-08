@@ -9,7 +9,7 @@ from pydantic import BaseModel
 class GetAllTodo(BaseModel):
     id: str
     title: str
-    isCompleted: bool
+    isComplete: bool
 
 
 class GetAllTodoResponse(BaseModel):
@@ -33,7 +33,7 @@ async def get_todo():
             GetAllTodo(
                 id=todo.id,
                 title=todo.title,
-                isCompleted=todo.is_completed,
+                isComplete=todo.is_completed,
             )
             for todo in complete_todo_result
         ]

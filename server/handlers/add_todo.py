@@ -11,7 +11,7 @@ class AddTodoRequest(BaseModel):
 class AddTodoResponse(BaseModel):
     id: str
     title: str
-    isCompleted: bool
+    isComplete: bool
 
 
 router = APIRouter()
@@ -34,7 +34,7 @@ async def add_todo(request: AddTodoRequest):
         return AddTodoResponse(
             id=add_todo_result.id,
             title=add_todo_result.title,
-            isCompleted=add_todo_result.is_completed,
+            isComplete=add_todo_result.is_completed,
         )
 
     except Exception as e:
