@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/db/init:/docker-entrypoint-initdb.d
+      - ./docker/db/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: ./docker/server/Dockerfile
+    stdin_open: true
+    ports:
+      - 8000:8000
+
+

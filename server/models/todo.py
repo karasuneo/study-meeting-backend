@@ -1,0 +1,76 @@
+from dataclasses import dataclass
+from typing import Optional
+
+from psycopg2.extensions import connection
+from ulid import ULID
+
+
+@dataclass
+class Todo:
+    def __init__(
+        self, title: str, id: Optional[str] = None, is_completed: bool = False
+    ):
+        self.id = id or str(ULID())
+        self.title = title
+        self.is_completed = is_completed
+
+
+class TodoModel:
+    @staticmethod
+    def save(conn: connection, todo: Todo) -> Todo:
+        with conn as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO todos (id, title) VALUES (%s, %s) RETURNING id",
+                    (
+                        todo.id,
+                        todo.title,
+                    ),
+                )
+                result = cursor.fetchone()
+                if result is None:
+                    raise Exception("Failed to save todo")
+                id = result[0]
+
+                return Todo(
+                    id=id,
+                    title=todo.title,
+                )
+
+    @staticmethod
+    def update_true(conn: connection, id: str) -> Todo:
+        with conn as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE todos SET is_completed = true WHERE id = %s RETURNING id, title, is_completed",
+                    (id,),
+                )
+                result = cursor.fetchone()
+                if result is None:
+                    raise Exception("Failed to update todo")
+                id, title, is_completed = result
+
+                return Todo(
+                    id=id,
+                    title=title,
+                    is_completed=is_completed,
+                )
+
+    @staticmethod
+    def update_false(conn: connection, id: str) -> Todo:
+        with conn as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE todos SET is_completed = false WHERE id = %s RETURNING id, title, is_completed",
+                    (id,),
+                )
+                result = cursor.fetchone()
+                if result is None:
+                    raise Exception("Failed to update todo")
+                id, title, is_completed = result
+
+                return Todo(
+                    id=id,
+                    title=title,
+                    is_completed=is_completed,
+                )
