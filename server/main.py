@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from handlers.add_todo import router as add_todo_router
 from handlers.complete_todo import router as complete_todo_router
+from handlers.delete_todo import router as delete_todo_router
 from handlers.get_todo import router as get_todo_router
 from handlers.un_complete_todo import router as un_complete_todo_router
 from starlette.requests import Request
@@ -21,6 +22,7 @@ app.add_middleware(
 
 app.include_router(get_todo_router)
 app.include_router(add_todo_router)
+app.include_router(delete_todo_router)
 app.include_router(complete_todo_router)
 app.include_router(un_complete_todo_router)
 

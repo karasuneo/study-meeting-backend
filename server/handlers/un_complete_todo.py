@@ -4,10 +4,6 @@ from models.todo import TodoModel
 from pydantic import BaseModel
 
 
-class UnCompleteTodoRequest(BaseModel):
-    id: str
-
-
 class UnCompleteTodoResponse(BaseModel):
     id: str
     title: str
@@ -17,15 +13,17 @@ class UnCompleteTodoResponse(BaseModel):
 router = APIRouter()
 
 
-@router.put("/todo/uncomplete", response_model=UnCompleteTodoResponse, status_code=201)
-async def un_complete_todo(request: UnCompleteTodoRequest):
+@router.put(
+    "/todo/uncomplete/{todo_id}", response_model=UnCompleteTodoResponse, status_code=201
+)
+async def un_complete_todo(todo_id: str):
     """
     ## TODO を未完了にする
     """
     try:
         conn = DBConnection.connect()
 
-        complete_todo_result = TodoModel.update_false(conn, request.id)
+        complete_todo_result = TodoModel.update_false(conn, todo_id)
 
         return UnCompleteTodoResponse(
             id=complete_todo_result.id,

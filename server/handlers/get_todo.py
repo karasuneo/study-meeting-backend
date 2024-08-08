@@ -2,14 +2,15 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 from models.connection import DBConnection
-from models.todo import  TodoModel
+from models.todo import TodoModel
 from pydantic import BaseModel
 
 
 class GetAllTodo(BaseModel):
-    id : str
+    id: str
     title: str
     is_completed: bool
+
 
 class GetAllTodoResponse(BaseModel):
     todos: List[GetAllTodo]

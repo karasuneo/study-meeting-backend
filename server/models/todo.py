@@ -93,3 +93,12 @@ class TodoModel:
                     title=title,
                     is_completed=is_completed,
                 )
+
+    @staticmethod
+    def delete(conn: connection, id: str) -> None:
+        with conn as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM todos WHERE id = %s",
+                    (id,),
+                )

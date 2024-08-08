@@ -4,10 +4,6 @@ from models.todo import TodoModel
 from pydantic import BaseModel
 
 
-class CompleteTodoRequest(BaseModel):
-    id: str
-
-
 class CompleteTodoResponse(BaseModel):
     id: str
     title: str
@@ -17,15 +13,17 @@ class CompleteTodoResponse(BaseModel):
 router = APIRouter()
 
 
-@router.put("/todo/complete", response_model=CompleteTodoResponse, status_code=201)
-async def complete_todo(request: CompleteTodoRequest):
+@router.put(
+    "/todo/complete/{todo_id}", response_model=CompleteTodoResponse, status_code=201
+)
+async def complete_todo(todo_id: str):
     """
     ## TODO を完了する
     """
     try:
         conn = DBConnection.connect()
 
-        complete_todo_result = TodoModel.update_true(conn, request.id)
+        complete_todo_result = TodoModel.update_true(conn, todo_id)
 
         return CompleteTodoResponse(
             id=complete_todo_result.id,
