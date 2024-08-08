@@ -7,7 +7,7 @@ from pydantic import BaseModel
 class UnCompleteTodoResponse(BaseModel):
     id: str
     title: str
-    is_completed: bool
+    isCompleted: bool
 
 
 router = APIRouter()
@@ -28,7 +28,7 @@ async def un_complete_todo(todo_id: str):
         return UnCompleteTodoResponse(
             id=complete_todo_result.id,
             title=complete_todo_result.title,
-            is_completed=complete_todo_result.is_completed,
+            isCompleted=complete_todo_result.is_completed,
         )
 
     except Exception as e:
