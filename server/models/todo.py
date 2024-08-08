@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import List, Optional
 
 from psycopg2.extensions import connection
 from ulid import ULID
@@ -16,6 +16,25 @@ class Todo:
 
 
 class TodoModel:
+    @staticmethod
+    def get(conn: connection) -> List[Todo]:
+        with conn as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT id, title, is_completed FROM todos")
+                result = cursor.fetchall()
+
+                if result is None:
+                    raise Exception("Failed to get todos")
+
+                return [
+                    Todo(
+                        id=id,
+                        title=title,
+                        is_completed=is_completed,
+                    )
+                    for id, title, is_completed in result
+                ]
+
     @staticmethod
     def save(conn: connection, todo: Todo) -> Todo:
         with conn as conn:
